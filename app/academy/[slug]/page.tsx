@@ -1,3 +1,7 @@
+'use client';
+
+import Link from 'next/link';
+
 export default function CourseDetail({ params }: { params: { slug: string } }) {
   return (
     <div dir="rtl" className="max-w-5xl mx-auto py-16 px-6">
@@ -43,7 +47,7 @@ export default function CourseDetail({ params }: { params: { slug: string } }) {
 
         {/* Enrollment Sticky Sidebar */}
         <div className="space-y-6">
-          <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-xl sticky top-6 space-y-6">
+          <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-xl sticky top-28 space-y-6">
             <div className="flex justify-between items-center border-b border-[var(--border-subtle)] pb-4">
               <span className="text-sm text-[var(--text-secondary)]">مبلغ سرمایه‌گذاری:</span>
               <span className="text-2xl font-extrabold text-[var(--brand-accent)]">۴,۸۰۰,۰۰۰ تومان</span>
@@ -66,13 +70,19 @@ export default function CourseDetail({ params }: { params: { slug: string } }) {
 
             <button
               onClick={() => alert('هدایت به درگاه پرداخت یا ثبت نام تکمیلی...')}
-              className="w-full py-4 rounded-xl font-bold text-white bg-[var(--brand-primary)] hover:opacity-90 transition-opacity shadow-lg text-center"
+              className="w-full py-4 rounded-xl font-bold text-white bg-[var(--brand-primary)] hover:opacity-90 transition-opacity shadow-lg text-center cursor-pointer"
             >
               ثبت‌نام در دوره آموزشی
             </button>
           </div>
         </div>
 
+      </div>
+
+      <div className="mt-12 pt-6 border-t border-[var(--border-subtle)]">
+        <Link href="/academy" className="text-sm font-semibold text-[var(--brand-primary)] hover:underline">
+          &larr; بازگشت به لیست دوره‌های آکادمی
+        </Link>
       </div>
     </div>
   );

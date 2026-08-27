@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
-/* Define custom design tokens and theme mappings for Tailwind v4 */
 @theme {
+  --font-sans: var(--font-vazirmatn), system-ui, -apple-system, sans-serif;
+  
   --color-bg-canvas: var(--bg-canvas);
   --color-bg-surface: var(--bg-surface);
   --color-bg-surface-hover: var(--bg-surface-hover);
@@ -40,5 +41,5 @@
 body {
   background-color: var(--bg-canvas);
   color: var(--text-primary);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
 }

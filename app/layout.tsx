@@ -1,8 +1,17 @@
+import Logo from "@/components/Logo";
 import type { Metadata } from "next";
+import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import ThemeToggle from "@/components/ThemeToggle";
 import Link from "next/link";
+
+// Configure Vazirmatn font with Persian/Arabic subset support
+const vazirmatn = Vazirmatn({
+  subsets: ["arabic", "latin"],
+  variable: "--font-vazirmatn",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "گروه مالی و مالیاتی",
@@ -15,22 +24,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
-      <body className="min-h-screen flex flex-col antialiased">
+    <html lang="fa" dir="rtl" className={vazirmatn.variable}>
+      <body className="min-h-screen flex flex-col antialiased font-sans">
         <ThemeProvider>
           {/* Global Header */}
           <header className="border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-              <Link href="/" className="font-extrabold text-xl text-[var(--text-primary)]">
-                گروه تخصصی <span className="text-[var(--brand-primary)]">مالی</span>
-              </Link>
-              
+              <Logo size="md" />
+
               <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[var(--text-secondary)]">
                 <Link href="/" className="hover:text-[var(--text-primary)] transition-colors">صفحه اصلی</Link>
                 <Link href="/services" className="hover:text-[var(--text-primary)] transition-colors">خدمات</Link>
                 <Link href="/academy" className="hover:text-[var(--text-primary)] transition-colors">آکادمی</Link>
                 <Link href="/blog" className="hover:text-[var(--text-primary)] transition-colors">مقالات و اخبار</Link>
-                <Link href="/case-studies" className="hover:text-[var(--text-primary)] transition-colors">پرونده‌ها</Link>
               </nav>
 
               <div className="flex items-center gap-4">
