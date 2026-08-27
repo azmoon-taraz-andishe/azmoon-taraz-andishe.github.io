@@ -1,5 +1,6 @@
 import type { PaymentGateway } from "@/lib/payment/types";
 import { paypingGateway } from "@/lib/payment/gateways/payping";
+import { zarinpalGateway } from "@/lib/payment/gateways/zarinpal";
 import { mockGateway } from "@/lib/payment/gateways/mock";
 
 /**
@@ -8,9 +9,9 @@ import { mockGateway } from "@/lib/payment/gateways/mock";
  */
 const GATEWAYS: Record<string, PaymentGateway> = {
   payping: paypingGateway,
+  zarinpal: zarinpalGateway, // has a sandbox: ZARINPAL_SANDBOX=1
   mock: mockGateway, // local dev only, see gateways/mock.ts
   // zibal: zibalGateway,
-  // zarinpal: zarinpalGateway,
 };
 
 export const DEFAULT_GATEWAY = "payping";

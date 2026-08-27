@@ -29,7 +29,9 @@ bank → POST /api/payment/callback?o=<order-token>
 
 No route handler or UI change. All amounts crossing the `PaymentGateway`
 boundary are in **Rial**; each adapter converts to what its API expects
-(PayPing → Toman).
+(PayPing → Toman; ZarinPal stays Rial with `currency: "IRR"`).
+
+Registered adapters: `payping`, `zarinpal`, `mock`.
 
 ## Before production
 
@@ -60,13 +62,30 @@ callback → verify → `/payment/result`. Set `MOCK_VERIFY=fail` to exercise th
 "paid but not verified" branch. `mock` is refused when `NODE_ENV=production`
 unless `ALLOW_MOCK_PAYMENT=1`.
 
-### 2. Real PayPing
+### 2. ZarinPal sandbox — real gateway pages, fake money
+
+Closest thing to production without spending money. Still needs a public
+callback URL (ZarinPal redirects the browser there), so run a tunnel:
+
+```
+cloudflared tunnel --url http://localhost:3000     # or ngrok / localtunnel
+PAYMENT_GATEWAY=zarinpal
+ZARINPAL_SANDBOX=1
+ZARINPAL_MERCHANT_ID=00000000-0000-0000-0000-000000000000   # any 36 chars in sandbox
+NEXT_PUBLIC_SITE_URL=https://<your-tunnel>.trycloudflare.com
+```
+
+On the sandbox pay page any card number / OTP is accepted and you choose
+success or failure. `sandbox.zarinpal.com` is generally reachable from outside
+Iran, unlike the production hosts.
+
+### 3. Real PayPing
 
 PayPing must reach your callback URL and your machine must reach
 `api.payping.ir` (VPN to Iran if you're outside). Expose the dev server:
 
 ```
-cloudflared tunnel --url http://localhost:3000     # or ngrok / localtunnel
+cloudflared tunnel --url http://localhost:3000
 PAYMENT_GATEWAY=payping
 PAYPING_TOKEN=<real token>
 NEXT_PUBLIC_SITE_URL=https://<your-tunnel>.trycloudflare.com
