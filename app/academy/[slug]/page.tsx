@@ -1,5 +1,8 @@
 import Link from 'next/link';
-import EnrollButton from './EnrollButton';
+import { notFound } from 'next/navigation';
+import PayButton from '@/components/PayButton';
+import { lookupCatalogItem } from '@/lib/catalog';
+import { formatToman } from '@/lib/payment/money';
 
 const COURSE_SLUGS = [
   'industrial-accounting-pro',
@@ -11,7 +14,13 @@ export function generateStaticParams() {
   return COURSE_SLUGS.map((slug) => ({ slug }));
 }
 
-export default function CourseDetail() {
+export default async function CourseDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const course = lookupCatalogItem('course', slug);
+  if (!course) {
+    notFound();
+  }
+
   return (
     <div dir="rtl" className="max-w-5xl mx-auto py-16 px-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -59,7 +68,7 @@ export default function CourseDetail() {
           <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6 shadow-xl sticky top-28 space-y-6">
             <div className="flex justify-between items-center border-b border-[var(--border-subtle)] pb-4">
               <span className="text-sm text-[var(--text-secondary)]">مبلغ سرمایه‌گذاری:</span>
-              <span className="text-2xl font-extrabold text-[var(--brand-accent)]">۴,۸۰۰,۰۰۰ تومان</span>
+              <span className="text-2xl font-extrabold text-[var(--brand-accent)]">{formatToman(course.amountRial)}</span>
             </div>
 
             <ul className="space-y-3 text-sm text-[var(--text-secondary)]">
@@ -77,7 +86,9 @@ export default function CourseDetail() {
               </li>
             </ul>
 
-            <EnrollButton />
+            <PayButton kind="course" itemId={course.itemId}>
+              ثبت‌نام در دوره آموزشی
+            </PayButton>
           </div>
         </div>
 

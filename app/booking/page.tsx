@@ -1,9 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { startPayment } from '@/lib/pay-client';
+import { lookupCatalogItem } from '@/lib/catalog';
+import { formatToman } from '@/lib/payment/money';
 
 export default function BookingPage() {
   const [step, setStep] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     serviceType: 'tax',
     format: 'online',
@@ -19,10 +24,31 @@ export default function BookingPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const fee = lookupCatalogItem('consultation', formData.serviceType);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would integrate your backend API / SMS gateway (e.g., Kavenegar)
-    alert('رزرو مشاوره شما با موفقیت ثبت شد. به زودی برای تایید نهایی با شما تماس خواهیم گرفت.');
+    setError(null);
+
+    if (!formData.date || !formData.fullName.trim() || !formData.phone.trim()) {
+      setError('لطفاً تاریخ، نام و شماره موبایل را کامل وارد کنید.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      // TODO: persist the requested slot (date/time/format/description) server-side
+      // and tie it to the payment before redirecting.
+      await startPayment({
+        kind: 'consultation',
+        itemId: formData.serviceType,
+        payerName: formData.fullName,
+        payerMobile: formData.phone,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'خطا در اتصال به درگاه پرداخت');
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -168,11 +194,21 @@ export default function BookingPage() {
             </div>
           </div>
 
+          {fee && (
+            <div className="flex justify-between items-center border-t border-[var(--border-subtle)] pt-4 text-sm">
+              <span className="text-[var(--text-secondary)]">هزینه رزرو این مشاوره:</span>
+              <strong className="text-[var(--brand-accent)] text-lg">{formatToman(fee.amountRial)}</strong>
+            </div>
+          )}
+
+          {error && <p className="text-sm text-red-600 dark:text-red-400 text-center">{error}</p>}
+
           <button
             type="submit"
-            className="w-full py-4 rounded-xl font-bold text-white bg-[var(--brand-primary)] hover:opacity-90 transition-opacity shadow-lg text-center"
+            disabled={submitting}
+            className="w-full py-4 rounded-xl font-bold text-white bg-[var(--brand-primary)] hover:opacity-90 transition-opacity shadow-lg text-center disabled:opacity-60 disabled:cursor-wait"
           >
-            تایید و ثبت نهایی درخواست مشاوره
+            {submitting ? 'در حال انتقال به درگاه پرداخت…' : 'پرداخت و ثبت نهایی درخواست مشاوره'}
           </button>
         </form>
       </div>
