@@ -1,8 +1,17 @@
-'use client';
-
 import Link from 'next/link';
+import EnrollButton from './EnrollButton';
 
-export default function CourseDetail({ params }: { params: { slug: string } }) {
+const COURSE_SLUGS = [
+  'industrial-accounting-pro',
+  'tax-rules-defense',
+  'excel-for-finance',
+];
+
+export function generateStaticParams() {
+  return COURSE_SLUGS.map((slug) => ({ slug }));
+}
+
+export default function CourseDetail() {
   return (
     <div dir="rtl" className="max-w-5xl mx-auto py-16 px-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -68,12 +77,7 @@ export default function CourseDetail({ params }: { params: { slug: string } }) {
               </li>
             </ul>
 
-            <button
-              onClick={() => alert('هدایت به درگاه پرداخت یا ثبت نام تکمیلی...')}
-              className="w-full py-4 rounded-xl font-bold text-white bg-[var(--brand-primary)] hover:opacity-90 transition-opacity shadow-lg text-center cursor-pointer"
-            >
-              ثبت‌نام در دوره آموزشی
-            </button>
+            <EnrollButton />
           </div>
         </div>
 

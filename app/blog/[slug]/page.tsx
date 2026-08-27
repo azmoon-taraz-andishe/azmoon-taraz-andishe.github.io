@@ -2,6 +2,10 @@ import Link from 'next/link';
 import { getPostBySlug, getAllPosts } from '@/data/posts';
 import { notFound } from 'next/navigation';
 
+export function generateStaticParams() {
+  return getAllPosts().map((post) => ({ slug: post.slug }));
+}
+
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = getPostBySlug(slug);

@@ -1,6 +1,16 @@
 import Link from 'next/link';
 
-export default function CaseStudyDetail({ params }: { params: { slug: string } }) {
+const CASE_STUDY_SLUGS = [
+  'tax-penalty-reduction-manufacturing',
+  'ledger-audit-rejection-rescue',
+  'cost-accounting-failure-analysis',
+];
+
+export function generateStaticParams() {
+  return CASE_STUDY_SLUGS.map((slug) => ({ slug }));
+}
+
+export default function CaseStudyDetail() {
   return (
     <article dir="rtl" className="max-w-4xl mx-auto py-16 px-6 space-y-10">
       

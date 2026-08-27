@@ -1,6 +1,17 @@
 import Link from 'next/link';
 
-export default function ServiceDetail({ params }: { params: { slug: string } }) {
+const SERVICE_SLUGS = [
+  'industrial-accounting',
+  'tax-services',
+  'ledger-audit',
+  'financial-management',
+];
+
+export function generateStaticParams() {
+  return SERVICE_SLUGS.map((slug) => ({ slug }));
+}
+
+export default function ServiceDetail() {
   // In a real app, you would fetch service data based on params.slug
   return (
     <div dir="rtl" className="max-w-4xl mx-auto py-16 px-6 space-y-12">
