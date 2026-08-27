@@ -1,5 +1,6 @@
 import type { PaymentGateway } from "@/lib/payment/types";
 import { paypingGateway } from "@/lib/payment/gateways/payping";
+import { mockGateway } from "@/lib/payment/gateways/mock";
 
 /**
  * Registry of available gateways. Add a new one here and it becomes selectable
@@ -7,6 +8,7 @@ import { paypingGateway } from "@/lib/payment/gateways/payping";
  */
 const GATEWAYS: Record<string, PaymentGateway> = {
   payping: paypingGateway,
+  mock: mockGateway, // local dev only, see gateways/mock.ts
   // zibal: zibalGateway,
   // zarinpal: zarinpalGateway,
 };
@@ -21,6 +23,13 @@ export function getGateway(
     throw new Error(
       `Unknown PAYMENT_GATEWAY "${id}". Available: ${Object.keys(GATEWAYS).join(", ")}`,
     );
+  }
+  if (
+    gateway.id === "mock" &&
+    process.env.NODE_ENV === "production" &&
+    process.env.ALLOW_MOCK_PAYMENT !== "1"
+  ) {
+    throw new Error("Mock payment gateway is disabled in production");
   }
   return gateway;
 }

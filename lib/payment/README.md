@@ -46,6 +46,31 @@ boundary are in **Rial**; each adapter converts to what its API expects
 
 ## Local testing
 
-PayPing must be able to POST to your callback URL, so expose your dev server
-with a tunnel (e.g. `cloudflared tunnel --url http://localhost:3000`) and set
-`NEXT_PUBLIC_SITE_URL` to the tunnel URL.
+### 1. Mock gateway — no bank, no tunnel (default in `.env.example`)
+
+```
+PAYMENT_GATEWAY=mock
+PAYMENT_SECRET=<any 16+ chars>
+```
+
+`npm run dev`, open a course or the booking form, click through. The `mock`
+gateway sends you to an in-app fake bank page (`/payment/mock`) with
+**پرداخت موفق** / **انصراف** buttons that post straight back to the real
+callback → verify → `/payment/result`. Set `MOCK_VERIFY=fail` to exercise the
+"paid but not verified" branch. `mock` is refused when `NODE_ENV=production`
+unless `ALLOW_MOCK_PAYMENT=1`.
+
+### 2. Real PayPing
+
+PayPing must reach your callback URL and your machine must reach
+`api.payping.ir` (VPN to Iran if you're outside). Expose the dev server:
+
+```
+cloudflared tunnel --url http://localhost:3000     # or ngrok / localtunnel
+PAYMENT_GATEWAY=payping
+PAYPING_TOKEN=<real token>
+NEXT_PUBLIC_SITE_URL=https://<your-tunnel>.trycloudflare.com
+```
+
+PayPing has no public sandbox — test with a small real amount and refund it
+from the PayPing panel.
