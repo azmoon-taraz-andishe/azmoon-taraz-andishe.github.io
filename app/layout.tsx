@@ -1,7 +1,16 @@
+import { Vazirmatn } from "next/font/google";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import { AuthProvider } from "@/context/AuthContext";
 import "@/app/globals.css";
+
+// Persian/Arabic UI font. Exposed as `--font-vazirmatn`, which `globals.css`
+// feeds into `--font-sans` (and thus `font-sans` / the body font-family).
+const vazirmatn = Vazirmatn({
+  subsets: ["arabic", "latin"],
+  variable: "--font-vazirmatn",
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
@@ -9,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" className={vazirmatn.variable}>
       <body className="bg-[var(--bg-canvas)] text-[var(--text-primary)] min-h-screen flex flex-col font-sans">
         <AuthProvider>
           {/* Global Header */}
