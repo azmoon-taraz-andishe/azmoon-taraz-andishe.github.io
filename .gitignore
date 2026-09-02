@@ -16,6 +16,8 @@
 # next.js
 /.next/
 /out/
+# transient: `npm run build:static` moves app/api here during the export build
+/.api-stash/
 
 # production
 /build
